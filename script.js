@@ -4,7 +4,7 @@
 // ============================================================
 
 // ---- 調整用の数字 ----
-const TIMEOUT_MS = 0;   // 1回の生成で待つ最大時間（10秒）
+const TIMEOUT_MS = 0;       // 1回の生成で待つ最大時間。0 = 結果が出るまで待つ（例：10000 にすると10秒で打ち切り）
 const MAX_TRIES = 3;        // 生成は最初の1回を含めて合計3回まで
 const FLIP_GAP_MS = 700;    // カードが1枚ずつ裏返る間隔
 const PLACES = ["cafe", "station", "school", "home"];
@@ -64,7 +64,7 @@ function shatterWord(word, btn) {
 // ---------- AI生成（失敗したらサンプル） ----------
 async function askAI(target) {
   const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
+  const timer = TIMEOUT_MS > 0 ? setTimeout(() => ctrl.abort(), TIMEOUT_MS) : null;
   try {
     const res = await fetch("/api/generate", {
       method: "POST",
@@ -80,7 +80,7 @@ async function askAI(target) {
   } catch (e) {
     return { kind: "fail" }; // 10秒切れ・通信失敗
   } finally {
-    clearTimeout(timer);
+    if (timer) clearTimeout(timer);
   }
 }
 
@@ -112,7 +112,7 @@ async function getScenario(target, myRun) {
       i === 1 ? "AIが「消えた世界」を計算中…" : `AIが世界を作り直し中…（${i}/${MAX_TRIES}）`;
     const r = await askAI(target);
     if (r.kind === "ok") return { data: r.data, source: "ai" };
-    if (r.kind === "fail") break; // 失敗・10秒切れ・形式崩れはすぐサンプルへ
+    if (r.kind === "fail") break; // 通信失敗・形式崩れはすぐサンプルへ
     // r.kind === "ng" のときだけ作り直す
   }
   return { data: SAMPLES[target], source: "sample" };
