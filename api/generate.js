@@ -47,7 +47,7 @@ export default async function handler(req, res) {
     res.status(500).json({ error: "no api key" });
     return;
   }
-  const model = process.env.GEMINI_MODEL || "gemini-3.8-flash";
+  const model = process.env.GEMINI_MODEL || "gemini-3.5-flash-lite";
 
   try {
     const r = await fetch(
