@@ -5,7 +5,7 @@
 
 // ---- 調整用の数字 ----
 const TIMEOUT_MS = 0;       // 1回の生成で待つ最大時間。0 = 結果が出るまで待つ（例：10000 にすると10秒で打ち切り）
-const MAX_TRIES = 3;        // 生成は最初の1回を含めて合計3回まで
+const MAX_TRIES = 1;        // 生成の回数。1 = 作り直さない（実在の名前が混ざったらすぐサンプル）。3 にすると合計3回まで作り直す
 const FLIP_GAP_MS = 700;    // カードが1枚ずつ裏返る間隔
 const PLACES = ["cafe", "station", "school", "home"];
 
